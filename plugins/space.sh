@@ -1,8 +1,4 @@
 #!/bin/sh
-date '+%y-%m-%d %H:%M:%S' >> $CONFIG_DIR/logs/plugins-space.txt
-echo "  $NAME" >> $CONFIG_DIR/logs/plugins-space.txt
-echo "  $SENDER" >> $CONFIG_DIR/logs/plugins-space.txt
-echo "  $SELECTED" >> $CONFIG_DIR/logs/plugins-space.txt
 
 source "${CONFIG_DIR}/colors.sh" # Loads all defined colors
 

@@ -1,9 +1,4 @@
 #!/bin/bash
-date '+%y-%m-%d %H:%M:%S' >> $CONFIG_DIR/logs/plugins-space_windows.txt
-echo "  $NAME" >> $CONFIG_DIR/logs/plugins-space_windows.txt
-echo "  $SENDER" >> $CONFIG_DIR/logs/plugins-space_windows.txt
-echo "  $INFO" >> $CONFIG_DIR/logs/plugins-space_windows.txt
-
 
 if [ "$SENDER" = "space_windows_change" ]; then
   space="$(echo "$INFO" | jq -r '.space')"
@@ -20,7 +15,8 @@ if [ "$SENDER" = "space_windows_change" ]; then
   fi
 
   if [ "${icon_strip}" != "" ]; then
-    sketchybar --set space.$space label="$icon_strip"
+    sketchybar --set space.$space label="$icon_strip" \
+                                  label.drawing=on
   else
     sketchybar --set space.$space label.drawing=off \
                                   icon.padding_right=6
