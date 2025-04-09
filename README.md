@@ -2,6 +2,8 @@
 
 This repository contains a custom configuration for [SketchyBar](https://github.com/FelixKratz/SketchyBar), a flexible macOS status bar replacement.
 
+![Sketchybar](media/sketchybar.gif)
+
 ## Features
 
 (You may want to add more specific details about your configuration here)
