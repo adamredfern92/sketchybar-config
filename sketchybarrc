@@ -1,0 +1,67 @@
+#!/bin/bash
+
+source "$CONFIG_DIR/colors.sh"
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+ITEM_DIR="$CONFIG_DIR/items"
+SCRIPT_DIR="$CONFIG_DIR/scripts"
+
+##### Bar Appearance #####
+sketchybar --bar position=top height=36 blur_radius=30 color=$BAR_COLOR
+
+##### Changing Defaults #####
+default=(
+  padding_left=5
+  padding_right=5
+  icon.font="SF Pro:Semibold:15.0"
+  label.font="SF Pro:Semibold:13.0"
+  icon.color=$WHITE
+  label.color=$WHITE
+  background.color=$ITEM_BG_COLOR
+  background.corner_radius=5
+  background.height=25
+  icon.padding_left=3
+  icon.padding_right=3
+  label.padding_left=3
+  label.padding_right=3
+)
+sketchybar --default "${default[@]}"
+
+##### Adding Left Items #####
+source $ITEM_DIR/spaces.sh
+#source $ITEM_DIR/spaces2.sh
+source $ITEM_DIR/front_app.sh
+
+##### Adding Left Notch Items #####
+source $ITEM_DIR/media.sh
+
+##### Adding Right Items #####
+source $ITEM_DIR/clock.sh
+source $ITEM_DIR/calendar.sh
+source $ITEM_DIR/spacer.sh 1
+source $ITEM_DIR/battery.sh
+source $ITEM_DIR/volume.sh
+source $ITEM_DIR/brightness.sh
+source $ITEM_DIR/spacer.sh 2
+source $ITEM_DIR/wifi.sh
+source $ITEM_DIR/network_up.sh
+source $ITEM_DIR/network_down.sh
+source $ITEM_DIR/spacer.sh 3
+source $ITEM_DIR/ram.sh
+source $ITEM_DIR/cpu.sh
+
+##### Group Items #####
+sketchybar --add bracket network wifi network.up network.down
+sketchybar --add bracket comp ram cpu
+sketchybar --add bracket comp2 battery volume brightness
+sketchybar --add bracket datetime clock calendar
+
+##### Further Settings #####
+sketchybar --set volume label.drawing=off
+sketchybar --set brightness label.drawing=off
+sketchybar --set clock icon.drawing=off
+sketchybar --set calendar icon.drawing=off
+sketchybar --set wifi label.drawing=off
+
+##### Force all scripts to run the first time (never do this in a script) #####
+sketchybar --update
