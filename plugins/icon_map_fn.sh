@@ -424,6 +424,12 @@ function icon_map() {
   "WhatsApp")
     icon_result=":whats_app:"
     ;;
+  "ChatGPT")
+    icon_result=":nova:"
+    ;;
+  "Disney+" | "TV" | "Netflix")
+    icon_result=":final_cut_pro:"
+    ;;
   *)
     icon_result=":default:"
     ;;
