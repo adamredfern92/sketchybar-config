@@ -7,7 +7,7 @@ ITEM_DIR="$CONFIG_DIR/items"
 SCRIPT_DIR="$CONFIG_DIR/scripts"
 
 ##### Bar Appearance #####
-sketchybar --bar position=top height=36 blur_radius=30 color=$BAR_COLOR
+sketchybar --bar position=bottom height=36 blur_radius=30 color=$BAR_COLOR
 
 ##### Changing Defaults #####
 default=(
@@ -35,10 +35,10 @@ source $ITEM_DIR/front_app.sh
 source $ITEM_DIR/media.sh
 
 ##### Adding Right Items #####
-source $ITEM_DIR/clock.sh
-source $ITEM_DIR/calendar.sh
-source $ITEM_DIR/spacer.sh 1
-source $ITEM_DIR/battery.sh
+#source $ITEM_DIR/clock.sh
+#source $ITEM_DIR/calendar.sh
+#source $ITEM_DIR/spacer.sh 1
+#source $ITEM_DIR/battery.sh
 source $ITEM_DIR/volume.sh
 source $ITEM_DIR/brightness.sh
 source $ITEM_DIR/spacer.sh 2
@@ -52,8 +52,8 @@ source $ITEM_DIR/cpu.sh
 ##### Group Items #####
 sketchybar --add bracket network wifi network.up network.down
 sketchybar --add bracket comp ram cpu
-sketchybar --add bracket comp2 battery volume brightness
-sketchybar --add bracket datetime clock calendar
+sketchybar --add bracket comp2 volume brightness #battery
+#sketchybar --add bracket datetime clock calendar
 
 ##### Further Settings #####
 sketchybar --set volume label.drawing=off
@@ -63,7 +63,7 @@ sketchybar --set calendar icon.drawing=off
 sketchybar --set wifi label.drawing=off
 
 ##### Events #####
-skecthybar --subscribe spaces space_change
+sketchybar --subscribe spaces space_change
 
 ##### Force all scripts to run the first time (never do this in a script) #####
 sketchybar --update
