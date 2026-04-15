@@ -31,8 +31,9 @@ sketchybar --default "${default[@]}"
 source $ITEM_DIR/spaces.sh
 source $ITEM_DIR/front_app.sh
 
-##### Adding Left Notch Items #####
-source $ITEM_DIR/media.sh
+##### Adding Center Items #####
+#source $ITEM_DIR/media.sh
+source $ITEM_DIR/claude_usage.sh
 
 ##### Adding Right Items #####
 #source $ITEM_DIR/clock.sh
@@ -48,14 +49,12 @@ source $ITEM_DIR/network_down.sh
 source $ITEM_DIR/spacer.sh 3
 source $ITEM_DIR/ram.sh
 source $ITEM_DIR/cpu.sh
-source $ITEM_DIR/spacer.sh 4
-source $ITEM_DIR/claude_usage.sh
 
 ##### Group Items #####
 sketchybar --add bracket network wifi network.up network.down
 sketchybar --add bracket comp ram cpu
 sketchybar --add bracket comp2 volume brightness battery
-sketchybar --add bracket claude claude_usage
+sketchybar --add bracket claude claude_icon claude_5h claude_5h_pct claude_7d claude_7d_pct
 #sketchybar --add bracket datetime clock calendar
 
 ##### Further Settings #####
