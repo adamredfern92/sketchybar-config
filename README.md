@@ -46,6 +46,20 @@ This repository contains a custom configuration for [SketchyBar](https://github.
     sketchybar
     ```
 
+## Updating the App Icon Map
+
+App icons in the spaces and front-app item are rendered using the [sketchybar-app-font](https://github.com/kvndrsslr/sketchybar-app-font). The font and its app-name mappings are kept in sync via `scripts/update_icon_map.sh`, which pulls the latest release directly from GitHub.
+
+```bash
+CONFIG_DIR="$HOME/.config/sketchybar" bash ~/.config/sketchybar/scripts/update_icon_map.sh
+sketchybar --reload
+```
+
+The script:
+- Fetches the latest release from the GitHub API
+- Downloads the pre-built `icon_map.sh` and updates `plugins/icon_map_fn.sh`
+- Downloads and installs the updated font to `~/Library/Fonts/sketchybar-app-font.ttf`
+
 ## Customization
 
 Feel free to modify the scripts in the `items/`, `plugins/`, and `scripts/` directories or the main `sketchybarrc` file to customize the appearance and behavior. Refer to the [SketchyBar Documentation](https://felixkratz.github.io/SketchyBar/) for more details.
