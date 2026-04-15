@@ -48,11 +48,14 @@ source $ITEM_DIR/network_down.sh
 source $ITEM_DIR/spacer.sh 3
 source $ITEM_DIR/ram.sh
 source $ITEM_DIR/cpu.sh
+source $ITEM_DIR/spacer.sh 4
+source $ITEM_DIR/claude_usage.sh
 
 ##### Group Items #####
 sketchybar --add bracket network wifi network.up network.down
 sketchybar --add bracket comp ram cpu
 sketchybar --add bracket comp2 volume brightness battery
+sketchybar --add bracket claude claude_usage
 #sketchybar --add bracket datetime clock calendar
 
 ##### Further Settings #####
