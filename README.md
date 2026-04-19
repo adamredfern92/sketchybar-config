@@ -6,8 +6,82 @@ This repository contains a custom configuration for [SketchyBar](https://github.
 
 ## Features
 
-(You may want to add more specific details about your configuration here)
-- Displays spaces, active window, time, date, network status, CPU/RAM usage, volume, brightness, battery, and media playback based on the included scripts.
+- **Spaces & active window** — workspace indicators on the left powered by yabai events.
+- **System stats** — CPU, RAM, network throughput, battery, volume, and brightness on the right.
+- **Claude usage tracking** — dual-window utilisation widget centred in the bar (see below).
+
+## Claude Usage Widget
+
+Tracks your [Claude Pro/Max](https://claude.ai) API consumption directly in the status bar, centred between the workspace indicators and system stats.
+
+### Layout
+
+```
+􀙚  2h ████░░░░ 38%   3d █░░░░░░░ 12%
+     ↑white ↑color  ↑white  ↑white ↑color  ↑white
+```
+
+The `􀙚` brain icon is followed by the **5-hour window** (time remaining · progress bar · percentage) and then the **7-day window** in the same format.
+
+### Pacing colour logic
+
+The progress bars change colour based on whether usage is outpacing the reset cycle:
+
+| Bar colour | Meaning |
+|---|---|
+| 🟢 Green | Utilisation % ≤ elapsed % of the reset cycle — on track |
+| 🔴 Red | Utilisation % > elapsed % of the reset cycle — burning faster than expected |
+
+Time-remaining and percentage labels are always white, independent of pacing state.
+
+### Modular items
+
+The widget is split into five independent Sketchybar items so that white text labels and coloured bars can coexist in the same bracket:
+
+| Item | Content | Colour |
+|---|---|---|
+| `claude_icon` | `􀙚` brain icon | White (static) |
+| `claude_5h` | 5h time remaining · progress bar | Icon: white · Bar: pacing colour |
+| `claude_5h_pct` | 5h percentage | White |
+| `claude_7d` | 7d time remaining · progress bar | Icon: white · Bar: pacing colour |
+| `claude_7d_pct` | 7d percentage | White |
+
+All five items are grouped in the `claude` bracket in `sketchybarrc`.
+
+### Authentication
+
+`plugins/claude_usage.sh` reads your OAuth token automatically from the macOS Keychain — no manual token management required under normal use.
+
+- **Token source** — the keychain entry with service name `Claude Code-credentials`, written by the Claude CLI when you log in.
+- **Expiry detection** — the script checks the `expiresAt` field in the keychain JSON before making any API call. Expired tokens are never sent to the API.
+- **Token lifetime** — Claude OAuth access tokens are valid for approximately 8 hours.
+
+#### Auth needed state
+
+If the bar displays:
+
+```
+auth needed ↻
+```
+
+the stored token has expired. Run the Claude CLI once to refresh it:
+
+```bash
+claude
+```
+
+The bar will recover automatically on its next poll (every 5 minutes).
+
+## Requirements
+
+| Dependency | Purpose |
+|---|---|
+| [Sketchybar](https://github.com/FelixKratz/SketchyBar) | Status bar engine |
+| [SF Symbols](https://developer.apple.com/sf-symbols/) | `􀙚` brain icon and other glyphs (bundled with macOS) |
+| [yabai](https://github.com/koekeishiya/yabai) | Window manager — used for workspace space-change events |
+| Python 3 | JSON parsing in `plugins/claude_usage.sh` (bundled with macOS) |
+| `colors.sh` | Shared colour palette (`$RED`, `$GREEN`, `$WHITE`, etc.) sourced by all plugins |
+| Claude CLI (`claude`) | Populates `Claude Code-credentials` in the Keychain; needed to refresh expired OAuth tokens |
 
 ## Installation
 
@@ -16,10 +90,6 @@ This repository contains a custom configuration for [SketchyBar](https://github.
     Typically, this involves using Homebrew:
     ```bash
     brew install sketchybar
-    ```
-    You might also need to install necessary fonts if specified by the configuration (check `sketchybarrc` or item scripts if unsure). Ensure `jq` is installed for JSON parsing used in some scripts:
-    ```bash
-    brew install jq
     ```
 
 2.  **Use this Configuration:**

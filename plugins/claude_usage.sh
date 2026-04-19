@@ -1,48 +1,49 @@
 #!/bin/bash
 
-# Get OAuth token from macOS Keychain
+set_auth_needed() {
+  sketchybar --set claude_5h     icon="auth" label="░░░░░░░░"
+  sketchybar --set claude_5h_pct icon="↻"
+  sketchybar --set claude_7d     icon="needed" label="░░░░░░░░"
+  sketchybar --set claude_7d_pct icon="↻"
+}
+
+# Get the short-lived OAuth token from Claude Code, if not expired
 CREDENTIALS=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null)
-
-if [ -z "$CREDENTIALS" ]; then
-  sketchybar --set claude_5h icon="N/A" label="░░░░░░░░"
-  sketchybar --set claude_5h_pct icon="--"
-  sketchybar --set claude_7d icon="N/A" label="░░░░░░░░"
-  sketchybar --set claude_7d_pct icon="--"
-  exit 0
-fi
-
-# Extract access token using python3
-ACCESS_TOKEN=$(echo "$CREDENTIALS" | python3 -c "
-import sys, json
+if [ -n "$CREDENTIALS" ]; then
+  ACCESS_TOKEN=$(echo "$CREDENTIALS" | python3 -c "
+import sys, json, time
 try:
-  d = json.load(sys.stdin)
-  print(d['claudeAiOauth']['accessToken'])
+  d = json.loads(sys.stdin.read())
+  oauth = d['claudeAiOauth']
+  expires_ms = oauth.get('expiresAt', 0)
+  if expires_ms > int(time.time() * 1000):
+    print(oauth['accessToken'])
 except Exception:
   pass
 " 2>/dev/null)
+fi
 
+# Nothing usable — show auth prompt (run 'claude' once to refresh the token)
 if [ -z "$ACCESS_TOKEN" ]; then
-  sketchybar --set claude_5h icon="N/A" label="░░░░░░░░"
-  sketchybar --set claude_5h_pct icon="--"
-  sketchybar --set claude_7d icon="N/A" label="░░░░░░░░"
-  sketchybar --set claude_7d_pct icon="--"
+  set_auth_needed
   exit 0
 fi
 
-# Fetch usage from Anthropic API
-RESPONSE=$(curl -s --max-time 10 \
+# Fetch usage from Anthropic API — capture body and HTTP status separately
+HTTP_RESPONSE=$(curl -s --max-time 10 \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -H "User-Agent: claude-code/2.0.32" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "anthropic-beta: oauth-2025-04-20" \
+  -w "\n__HTTP_STATUS__%{http_code}" \
   "https://api.anthropic.com/api/oauth/usage" 2>/dev/null)
 
-if [ -z "$RESPONSE" ]; then
-  sketchybar --set claude_5h icon="--" label="░░░░░░░░"
-  sketchybar --set claude_5h_pct icon="--"
-  sketchybar --set claude_7d icon="--" label="░░░░░░░░"
-  sketchybar --set claude_7d_pct icon="--"
+HTTP_STATUS=$(echo "$HTTP_RESPONSE" | grep -o '__HTTP_STATUS__[0-9]*' | grep -o '[0-9]*')
+RESPONSE=$(echo "$HTTP_RESPONSE" | sed 's/__HTTP_STATUS__[0-9]*$//')
+
+if [ -z "$RESPONSE" ] || [ "$HTTP_STATUS" != "200" ]; then
+  set_auth_needed
   exit 0
 fi
 
